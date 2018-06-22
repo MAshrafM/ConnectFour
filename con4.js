@@ -3,6 +3,7 @@ class Connect4{
     this.ROWS = 6;
     this.COLS = 7;
     this.player = 'red';
+    this.isGameOver = false;
     this.selector = selector;
     this.createGrid();
     this.setupEventListeners();
@@ -11,6 +12,9 @@ class Connect4{
   // dynamically create grid.
   createGrid(){
     const $board = $(this.selector);
+    $board.empty();
+    this.isGameOver = false;
+    this.player = 'red';
     for(let row = 0; row < this.ROWS; row++){
       const $row = $('<div>').addClass('row');
       for(let col = 0; col < this.COLS; col++){
@@ -39,6 +43,7 @@ class Connect4{
     }
     // simulate your next move on an empty cell
     $board.on('mouseenter', '.col.empty', function(){
+      if(that.isGameOver) return;
       const col = $(this).data('col');
       const $lastEmptyCell = findLastEmptyCell(col);
       $lastEmptyCell.addClass(`next-${that.player}`);
@@ -50,6 +55,7 @@ class Connect4{
     // Game play
     // Alternate players
     $board.on('click', '.col.empty', function() {
+      if(that.isGameOver) return;
       const col = $(this).data('col');
       const row = $(this).data('row');
       const $lastEmptyCell = findLastEmptyCell(col);
@@ -59,7 +65,10 @@ class Connect4{
       // check for winner
       const winner = that.checkForWinner($lastEmptyCell.data('row'), $lastEmptyCell.data('col'));
       if(winner) {
+        that.isGameOver = true;
         alert('Winner ' + that.player);
+        $('.col.empty').removeClass('empty');
+        return;
       }
       // alternate players
       that.player = (that.player == 'red') ? 'blue' : 'red';
@@ -110,5 +119,9 @@ class Connect4{
       return checkWin({i: -1, j: 1}, {i: -1, j: -1})
     }
     return checkVer() || checkHor() || checkDiagLR() || checkDiagRL();
+  }
+  
+  restart() {
+    this.createGrid();
   }
 }
