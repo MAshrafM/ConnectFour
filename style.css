@@ -1,5 +1,7 @@
 body {
   text-align: center;
+  color: #333;
+  background-color: rgb(255, 197, 113);
 }
 
 #connect4 {
@@ -42,6 +44,20 @@ body {
   border: 0;
   font-weight: bold;
   color: #333;
-  background-color: rgba(255, 255, 0, .5);
+  background-color: rgba(255, 255, 0, .8);
   cursor: pointer;
+}
+
+.fall {
+  animation-name: fall-animation;
+  animation-duration: 500ms;
+}
+
+@keyframes fall-animation {
+  from {
+      transform: translateY(-500px);
+  }
+  to {
+      transform: translateY(0);
+  }
 }

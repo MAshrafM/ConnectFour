@@ -60,6 +60,7 @@ class Connect4{
       const row = $(this).data('row');
       const $lastEmptyCell = findLastEmptyCell(col);
       $lastEmptyCell.removeClass('empty');
+      $lastEmptyCell.addClass('fall');
       $lastEmptyCell.addClass(that.player);
       $lastEmptyCell.data('player', that.player);
       // check for winner
@@ -76,14 +77,15 @@ class Connect4{
     });
     
   }
-  
+  // check winners
   checkForWinner(row, col) {
     const that = this;
-    
+    // get jquery cell
     function $getCell(i, j){
       return $(`.col[data-row='${i}'][data-col='${j}']`);
     }
-    
+    // check direction
+    // loop through possible wins
     function checkDir(dir){
       let total = 0;
       let i  = row + dir.i;
@@ -97,7 +99,7 @@ class Connect4{
       }
       return total;
     }
-    
+    // check winning direction
     function checkWin(dirA, dirB) {
       const total = 1 + checkDir(dirA) + checkDir(dirB);
       return total >= 4 ? that.player : null;
