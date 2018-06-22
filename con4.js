@@ -47,14 +47,68 @@ class Connect4{
     $board.on('mouseleave', '.col', function() {
       $('.col').removeClass(`next-${that.player}`);
     });
-    
+    // Game play
+    // Alternate players
     $board.on('click', '.col.empty', function() {
       const col = $(this).data('col');
+      const row = $(this).data('row');
       const $lastEmptyCell = findLastEmptyCell(col);
       $lastEmptyCell.removeClass('empty');
       $lastEmptyCell.addClass(that.player);
+      $lastEmptyCell.data('player', that.player);
+      // check for winner
+      const winner = that.checkForWinner($lastEmptyCell.data('row'), $lastEmptyCell.data('col'));
+      if(winner) {
+        alert('Winner ' + that.player);
+      }
+      // alternate players
       that.player = (that.player == 'red') ? 'blue' : 'red';
       $(this).trigger('mouseenter');
     });
+    
+  }
+  
+  checkForWinner(row, col) {
+    const that = this;
+    
+    function $getCell(i, j){
+      return $(`.col[data-row='${i}'][data-col='${j}']`);
+    }
+    
+    function checkDir(dir){
+      let total = 0;
+      let i  = row + dir.i;
+      let j = col + dir.j;
+      let $next = $getCell(i, j);
+      while(i >= 0 && i < that.ROWS && j >= 0 && j < that.COLS && $next.data('player') === that.player ) {
+        total++;
+        i += dir.i;
+        j += dir.j;
+        $next = $getCell(i, j);
+      }
+      return total;
+    }
+    
+    function checkWin(dirA, dirB) {
+      const total = 1 + checkDir(dirA) + checkDir(dirB);
+      return total >= 4 ? that.player : null;
+    }
+    
+    // check verticals in both up/down directions
+    function checkVer() {
+      return checkWin({i: -1, j: 0}, {i: 1, j: 0})
+    }
+    // check horizontal in both left/right directions
+    function checkHor(){
+      return checkWin({i: 0, j: -1}, {i: 0, j: 1})
+    }
+    // check diagonal
+    function checkDiagLR(){
+      return checkWin({i: 1, j: -1}, {i: 1, j: 1})
+    }
+    function checkDiagRL(){
+      return checkWin({i: -1, j: 1}, {i: -1, j: -1})
+    }
+    return checkVer() || checkHor() || checkDiagLR() || checkDiagRL();
   }
 }
