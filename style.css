@@ -19,3 +19,7 @@ body {
 .col.empty {
   cursor: pointer;
 }
+
+.next-red {
+  background-color: rgba(255, 0, 0, .2);
+}
